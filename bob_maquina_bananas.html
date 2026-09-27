@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bob y la Máquina de Bananas</title>
+
+
+<style>
+
+/* =====================================================
+   CONFIGURACIÓN GENERAL
+===================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #fff7d6;
+
+    color: #333;
+
+    overflow-x: hidden;
+}
+
+#app {
+
+    width: 100%;
+
+    min-height: 100vh;
+}
+
+
+/* =====================================================
+   BARRA SUPERIOR
+===================================================== */
+
+.topbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 65px;
+
+    background: #222;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 25px;
+
+    z-index: 1000;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.2);
+}
+
+.logo {
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+.progress-container {
+
+    width: 220px;
+
+    height: 10px;
+
+    background: #555;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.progress {
+
+    height: 100%;
+
+    width: 8.33%;
+
+    background: #ffd21c;
+
+    transition: .4s;
+}
+
+
+/* =====================================================
+   ESCENAS
+===================================================== */
+
+.scene {
+
+    display: none;
+
+    min-height: 100vh;
+
+    padding: 100px 7% 90px;
+
+    animation: fadeIn .5s ease;
+}
+
+.scene.active {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(15px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+
+/* =====================================================
+   TEXTOS
+===================================================== */
+
+h1 {
+
+    font-size: clamp(40px, 6vw, 80px);
+
+    line-height: 1;
+
+    margin-bottom: 20px;
+}
+
+h2 {
+
+    font-size: clamp(30px, 4vw, 55px);
+
+    margin-bottom: 20px;
+}
+
+h3 {
+
+    font-size: 25px;
+
+    margin-bottom: 12px;
+}
+
+p {
+
+    font-size: 20px;
+
+    line-height: 1.6;
+
+    max-width: 850px;
+}
+
+.highlight {
+
+    color: #d79b00;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   PORTADA
+===================================================== */
+
+.cover {
+
+    background:
+
+        linear-gradient(
+            rgba(255,247,214,.92),
+            rgba(255,247,214,.92)
+        ),
+
+        url("gru.png");
+
+    background-size: cover;
+
+    background-position: center;
+
+    text-align: center;
+
+    align-items: center;
+}
+
+.cover h1 {
+
+    color: #222;
+
+    text-shadow:
+        3px 3px 0 #ffd21c;
+}
+
+.cover-subtitle {
+
+    font-size: 25px;
+
+    margin-bottom: 18px;
+}
+
+
+/* =====================================================
+   DATOS DE LA ALUMNA
+===================================================== */
+
+.student-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    margin: 5px 0 18px;
+
+    text-align: center;
+
+    font-size: 16px;
+
+    line-height: 1.4;
+}
+
+.student-info strong {
+
+    font-size: 21px;
+
+    color: #222;
+}
+
+.student-info span {
+
+    color: #555;
+}
+
+
+/* =====================================================
+   IMÁGENES DE PORTADA
+===================================================== */
+
+.cover-images {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 30px;
+
+    margin: 15px 0 25px;
+}
+
+.cover-images img {
+
+    max-height: 250px;
+
+    width: auto;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 8px 7px rgba(0,0,0,.2)
+        );
+}
+
+.cover-images img:first-child {
+
+    max-height: 270px;
+}
+
+
+/* =====================================================
+   IMÁGENES DE PERSONAJES
+===================================================== */
+
+.character {
+
+    width: 230px;
+
+    max-height: 320px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 10px 7px rgba(0,0,0,.2)
+        );
+
+    animation:
+        float 3s ease-in-out infinite;
+}
+
+.character-small {
+
+    width: 180px;
+
+    max-height: 230px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 8px 6px rgba(0,0,0,.2)
+        );
+}
+
+.character-large {
+
+    width: 300px;
+
+    max-height: 380px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 12px 8px rgba(0,0,0,.2)
+        );
+
+    animation:
+        float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,100% {
+
+        transform:
+            translateY(0);
+    }
+
+    50% {
+
+        transform:
+            translateY(-10px);
+    }
+}
+
+
+/* =====================================================
+   HISTORIA
+===================================================== */
+
+.story {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 350px;
+
+    align-items: center;
+
+    gap: 50px;
+
+    max-width: 1200px;
+
+    margin: auto;
+
+    width: 100%;
+}
+
+.story-text {
+
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.1);
+}
+
+.character-box {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    min-height: 300px;
+}
+
+
+/* =====================================================
+   TARJETAS
+===================================================== */
+
+.cards {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(230px,1fr)
+        );
+
+    gap: 20px;
+
+    margin-top: 30px;
+}
+
+.card {
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.1);
+
+    transition: .25s;
+}
+
+.card:hover {
+
+    transform:
+        translateY(-7px);
+
+    box-shadow:
+        0 12px 25px rgba(0,0,0,.15);
+}
+
+.card h3 {
+
+    color: #d79b00;
+}
+
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+button {
+
+    border: none;
+
+    background: #222;
+
+    color: white;
+
+    padding: 15px 25px;
+
+    border-radius: 30px;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition: .25s;
+}
+
+button:hover {
+
+    background: #ffd21c;
+
+    color: #222;
+
+    transform:
+        translateY(-2px);
+}
+
+.buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    margin-top: 35px;
+
+    flex-wrap: wrap;
+}
+
+
+/* =====================================================
+   OPCIONES INTERACTIVAS
+===================================================== */
+
+.choice-container {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap: 20px;
+
+    margin-top: 35px;
+}
+
+.choice {
+
+    background: white;
+
+    border: 3px solid transparent;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+    text-align: center;
+}
+
+.choice:hover {
+
+    border-color: #ffd21c;
+
+    transform:
+        scale(1.03);
+}
+
+.choice.correct {
+
+    border-color: #38a169;
+
+    background: #e8fff0;
+}
+
+.choice.wrong {
+
+    border-color: #e05252;
+
+    background: #fff0f0;
+}
+
+.feedback {
+
+    margin-top: 25px;
+
+    padding: 20px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    display: none;
+}
+
+
+/* =====================================================
+   CEREBRO
+===================================================== */
+
+.brain {
+
+    font-size: 100px;
+
+    text-align: center;
+
+    animation:
+        pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,100% {
+
+        transform:
+            scale(1);
+    }
+
+    50% {
+
+        transform:
+            scale(1.08);
+    }
+}
+
+
+/* =====================================================
+   INSIGHT
+===================================================== */
+
+.insight {
+
+    text-align: center;
+
+    background: #1e1e2f;
+
+    color: white;
+}
+
+.insight h2 {
+
+    color: #ffd21c;
+}
+
+.lightbulb {
+
+    font-size: 110px;
+
+    animation:
+        glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+
+    from {
+
+        transform:
+            scale(1);
+
+        filter:
+            drop-shadow(
+                0 0 5px #ffd21c
+            );
+    }
+
+    to {
+
+        transform:
+            scale(1.15);
+
+        filter:
+            drop-shadow(
+                0 0 30px #ffd21c
+            );
+    }
+}
+
+
+/* =====================================================
+   MÁQUINA
+===================================================== */
+
+.machine {
+
+    margin: 35px auto;
+
+    width: 300px;
+
+    padding: 30px;
+
+    background: #555;
+
+    border-radius: 30px;
+
+    text-align: center;
+
+    color: white;
+
+    box-shadow:
+        0 15px 30px rgba(0,0,0,.25);
+}
+
+.machine-screen {
+
+    background: #111;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+
+    color: #55ff55;
+
+    font-family: monospace;
+}
+
+.banana {
+
+    font-size: 70px;
+
+    display: none;
+}
+
+.machine.active .banana {
+
+    display: block;
+
+    animation:
+        bananaFly 1s infinite alternate;
+}
+
+@keyframes bananaFly {
+
+    from {
+
+        transform:
+            translateX(-20px)
+            rotate(-10deg);
+    }
+
+    to {
+
+        transform:
+            translateX(20px)
+            rotate(10deg);
+    }
+}
+
+
+/* =====================================================
+   QUIZ
+===================================================== */
+
+.quiz {
+
+    max-width: 850px;
+
+    margin: auto;
+
+    width: 100%;
+}
+
+.question {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 25px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.1);
+}
+
+.answers {
+
+    display: grid;
+
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+.answer {
+
+    background: #f5f5f5;
+
+    padding: 18px;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.answer:hover {
+
+    background: #ffe88a;
+}
+
+.answer.correct {
+
+    background: #b8f2c5;
+}
+
+.answer.incorrect {
+
+    background: #ffc1c1;
+}
+
+.quiz-result {
+
+    text-align: center;
+
+    margin-top: 30px;
+
+    font-size: 25px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   ESCENA FINAL
+===================================================== */
+
+.final {
+
+    text-align: center;
+
+    align-items: center;
+
+    background:
+
+        linear-gradient(
+            rgba(255,247,214,.93),
+            rgba(255,247,214,.93)
+        ),
+
+        url("gru.png");
+
+    background-size: cover;
+
+    background-position: center;
+}
+
+.final img {
+
+    max-width: 330px;
+
+    max-height: 380px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 12px 8px rgba(0,0,0,.2)
+        );
+
+    animation:
+        float 3s ease-in-out infinite;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:800px) {
+
+    .story {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .choice-container {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .topbar {
+
+        padding:
+            0 12px;
+    }
+
+    .progress-container {
+
+        width: 120px;
+    }
+
+    .cover-images {
+
+        flex-direction:
+            column;
+    }
+
+    p {
+
+        font-size: 17px;
+    }
+
+    .student-info {
+
+        font-size: 14px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="app">
+
+
+<!-- =====================================================
+     BARRA SUPERIOR
+===================================================== -->
+
+<div class="topbar">
+
+    <div class="logo">
+
+        🍌 Bob y la Máquina de Bananas
+
+    </div>
+
+
+    <div class="progress-container">
+
+        <div
+            class="progress"
+            id="progress">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ESCENA 1 — PORTADA
+===================================================== -->
+
+<section
+    class="scene active cover"
+    id="scene1">
+
+
+    <h1>
+
+        Bob y la Máquina<br>
+        de Bananas
+
+    </h1>
+
+
+    <div class="cover-subtitle">
+
+        🍌 El Gran Salto Creativo 🍌
+
+    </div>
+
+
+    <!-- DATOS DE LA ALUMNA -->
+
+    <div class="student-info">
+
+        <strong>
+            Nasya Nicole Ramírez Solís
+        </strong>
+
+
+        <span>
+            Licenciatura en Administración Financiera y Sistemas
+        </span>
+
+
+        <span>
+            Centro Universitario de Ciencias Económico Administrativas
+        </span>
+
+
+        <span>
+            Universidad de Guadalajara
+        </span>
+
+    </div>
+
+
+    <div class="cover-images">
+
+
+        <img
+            src="bob_saludando.png"
+            alt="Bob saludando"
+            class="character">
+
+
+        <img
+            src="gru.png"
+            alt="Gru"
+            class="character-small">
+
+
+    </div>
+
+
+    <p>
+
+        Una historia sobre creatividad,
+        pensamiento divergente, inteligencia,
+        funciones ejecutivas e insight.
+
+    </p>
+
+
+    <div class="buttons">
+
+        <button onclick="nextScene()">
+
+            Comenzar la historia →
+
+        </button>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 2 — MISIÓN DE GRU
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene2">
+
+
+    <div class="story">
+
+
+        <div class="story-text">
+
+
+            <h2>
+
+                📢 La misión de Gru
+
+            </h2>
+
+
+            <p>
+
+                En la guarida subterránea de Gru,
+                el pequeño Bob recibió una misión:
+                diseñar un mecanismo capaz de
+                recolectar las bananas de las copas
+                más altas del jardín.
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                Pero había una condición:
+
+                <span class="highlight">
+
+                    las bananas no podían aplastarse.
+
+                </span>
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                Y aquí comenzó el verdadero reto
+                creativo.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="character-box">
+
+
+            <img
+                src="gru.png"
+                class="character"
+                alt="Gru">
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 3 — PENSAMIENTO DIVERGENTE
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene3">
+
+
+    <h2>
+
+        🧠 Bob piensa diferente
+
+    </h2>
+
+
+    <p>
+
+        Bob rechazó la idea de utilizar una
+        simple escalera. En su lugar comenzó
+        a generar diferentes posibilidades.
+
+    </p>
+
+
+    <br>
+
+
+    <h3>
+
+        ¿Qué concepto está utilizando?
+
+    </h3>
+
+
+    <div class="choice-container">
+
+
+        <div
+            class="choice"
+            onclick="chooseIdea(this,false)">
+
+
+            <h3>
+
+                Memorización
+
+            </h3>
+
+
+            <p>
+
+                Repetir una solución conocida.
+
+            </p>
+
+
+        </div>
+
+
+        <div
+            class="choice"
+            onclick="chooseIdea(this,true)">
+
+
+            <h3>
+
+                Pensamiento divergente
+
+            </h3>
+
+
+            <p>
+
+                Generar múltiples caminos
+                y posibilidades.
+
+            </p>
+
+
+        </div>
+
+
+        <div
+            class="choice"
+            onclick="chooseIdea(this,false)">
+
+
+            <h3>
+
+                Rutina
+
+            </h3>
+
+
+            <p>
+
+                Seguir siempre el mismo procedimiento.
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div
+        class="feedback"
+        id="ideaFeedback">
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 4 — ORIGINALIDAD Y UTILIDAD
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene4">
+
+
+    <h2>
+
+        💡 Tener ideas no es suficiente
+
+    </h2>
+
+
+    <div class="cards">
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Originalidad
+
+            </h3>
+
+
+            <p>
+
+                La solución debe ser novedosa
+                y diferente de las opciones comunes.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Utilidad
+
+            </h3>
+
+
+            <p>
+
+                Una idea creativa también debe
+                servir para resolver el problema.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Creatividad
+
+            </h3>
+
+
+            <p>
+
+                Bob necesitaba combinar
+                originalidad y utilidad.
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="buttons">
+
+
+        <button onclick="nextScene()">
+
+            Seguir →
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 5 — RESTRICCIONES
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene5">
+
+
+    <div class="story">
+
+
+        <div class="story-text">
+
+
+            <h2>
+
+                🚧 Las reglas también ayudan
+
+            </h2>
+
+
+            <p>
+
+                Bob descubrió que tener infinitas
+                posibilidades podía ser abrumador.
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                Por eso decidió establecer
+
+                <span class="highlight">
+
+                    restricciones y reglas claras.
+
+                </span>
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                En creatividad, los límites pueden
+                ayudar a organizar el proceso y
+                dirigir la búsqueda hacia una solución.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="character-box">
+
+
+            <img
+                src="bob_tim.png"
+                class="character"
+                alt="Bob y Tim">
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 6 — CEREBRO CREATIVO
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene6">
+
+
+    <h2>
+
+        🧠 El cerebro creativo de Bob
+
+    </h2>
+
+
+    <div class="brain">
+
+        🧠
+
+    </div>
+
+
+    <div class="cards">
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Ambos hemisferios
+
+            </h3>
+
+
+            <p>
+
+                La creatividad no depende únicamente
+                del hemisferio derecho.
+                Existe interacción entre ambos.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Inteligencia fluida
+
+            </h3>
+
+
+            <p>
+
+                Permite razonar de manera abstracta
+                y procesar información rápidamente.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Funciones ejecutivas
+
+            </h3>
+
+
+            <p>
+
+                Bob utiliza procesos como la
+                actualización y la inhibición.
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="buttons">
+
+
+        <button onclick="nextScene()">
+
+            Continuar →
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 7 — KEVIN
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene7">
+
+
+    <div class="story">
+
+
+        <div class="story-text">
+
+
+            <h2>
+
+                😵 Bob se obsesionó con su idea
+
+            </h2>
+
+
+            <p>
+
+                Bob estaba tan concentrado en sus
+                planos que ignoró completamente
+                a Kevin cuando le pidió ayuda.
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                Esto muestra algo interesante:
+                una persona creativa puede tener
+                mucha persistencia atencional,
+                pero eso no significa que sea
+                flexible en absolutamente todas
+                las situaciones.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="character-box">
+
+
+            <img
+                src="kevin_y_bob.png"
+                class="character"
+                alt="Kevin y Bob">
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 8 — INSIGHT
+===================================================== -->
+
+<section
+    class="scene insight"
+    id="scene8">
+
+
+    <div class="lightbulb">
+
+        💡
+
+    </div>
+
+
+    <h2>
+
+        ¡EL INSIGHT!
+
+    </h2>
+
+
+    <p style="margin:auto;">
+
+        Después de horas sin encontrar la solución,
+        Bob decidió descansar.
+
+    </p>
+
+
+    <br>
+
+
+    <p style="margin:auto;">
+
+        Mientras se encontraba relajado,
+        apareció de repente el momento de
+        inspiración:
+
+    </p>
+
+
+    <br>
+
+
+    <h2>
+
+        🍌 ¡La idea apareció!
+
+    </h2>
+
+
+    <p style="margin:auto;">
+
+        La respuesta no era atrapar las bananas
+        en el aire...
+
+    </p>
+
+
+    <br>
+
+
+    <h2>
+
+        ¡Había que succionarlas!
+
+    </h2>
+
+
+    <div class="buttons">
+
+
+        <button onclick="nextScene()">
+
+            ¿Qué inventó Bob? →
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 9 — MÁQUINA
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene9">
+
+
+    <h2>
+
+        ⚙️ El Banana-Sorb-O-Matic
+
+    </h2>
+
+
+    <p>
+
+        Bob construyó su increíble máquina:
+        un tubo de succión inversa amortiguado
+        con gelatina.
+
+    </p>
+
+
+    <div
+        class="machine"
+        id="machine">
+
+
+        <div class="machine-screen">
+
+            BANANA-SORB-O-MATIC
+
+        </div>
+
+
+        <div class="banana">
+
+            🍌
+
+        </div>
+
+
+        <p>
+
+            SISTEMA LISTO
+
+        </p>
+
+
+    </div>
+
+
+    <div class="buttons">
+
+
+        <button onclick="activateMachine()">
+
+            🍌 Activar máquina
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 10 — MEDIR LA CREATIVIDAD
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene10">
+
+
+    <h2>
+
+        🔬 El problema de medir la creatividad
+
+    </h2>
+
+
+    <div class="cards">
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Pensamiento divergente
+
+            </h3>
+
+
+            <p>
+
+                Se puede evaluar observando
+                cuántas y qué tipo de ideas
+                genera una persona.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h3>
+
+                Producto final
+
+            </h3>
+
+
+            <p>
+
+                También se puede analizar
+                si la solución creada resulta
+                original y útil.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="card">
+
+
+            <h3>
+
+                El dilema
+
+            </h3>
+
+
+            <p>
+
+                Estos métodos no necesariamente
+                producen los mismos resultados.
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="buttons">
+
+
+        <button onclick="nextScene()">
+
+            Ver resultado →
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 11 — FINAL
+===================================================== -->
+
+<section
+    class="scene final"
+    id="scene11">
+
+
+    <img
+        src="king_bob.png"
+        alt="King Bob"
+        class="character-large">
+
+
+    <h2>
+
+        👑 ¡Bob lo logró!
+
+    </h2>
+
+
+    <p>
+
+        La máquina logró recolectar racimos
+        completos sin aplastar las bananas.
+
+    </p>
+
+
+    <br>
+
+
+    <p>
+
+        Bob combinó diferentes ideas,
+        razonamiento, persistencia,
+        flexibilidad y un momento de insight
+        para encontrar una solución.
+
+    </p>
+
+
+    <br>
+
+
+    <h2>
+
+        🍌 La creatividad pasó de una idea
+        a una solución funcional.
+
+    </h2>
+
+
+    <div class="buttons">
+
+
+        <button onclick="nextScene()">
+
+            🧠 Pon a prueba lo aprendido
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     ESCENA 12 — QUIZ
+===================================================== -->
+
+<section
+    class="scene"
+    id="scene12">
+
+
+    <div class="quiz">
+
+
+        <h2>
+
+            🧠 ¿Cuánto aprendiste con Bob?
+
+        </h2>
+
+
+        <div class="question">
+
+
+            <h3 id="questionText">
+
+                Pregunta
+
+            </h3>
+
+
+            <div
+                class="answers"
+                id="answers">
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="quiz-result"
+            id="quizResult">
+        </div>
+
+
+        <div class="buttons">
+
+
+            <button
+                id="nextQuestion"
+                onclick="nextQuestion()"
+                style="display:none;">
+
+                Siguiente pregunta →
+
+            </button>
+
+
+            <button onclick="restartStory()">
+
+                🔄 Volver a comenzar
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     NAVEGACIÓN
+===================================================== -->
+
+<div
+    class="buttons"
+    style="
+        position:fixed;
+        bottom:15px;
+        left:0;
+        width:100%;
+        z-index:999;
+        pointer-events:none;
+    ">
+
+
+    <button
+        onclick="previousScene()"
+        style="pointer-events:auto;">
+
+        ← Anterior
+
+    </button>
+
+
+    <button
+        onclick="nextScene()"
+        style="pointer-events:auto;">
+
+        Siguiente →
+
+    </button>
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CONTROL DE ESCENAS
+===================================================== */
+
+let currentScene = 1;
+
+const totalScenes = 12;
+
+
+function showScene(number) {
+
+
+    document
+        .querySelectorAll(".scene")
+        .forEach(scene => {
+
+            scene.classList.remove("active");
+
+        });
+
+
+    document
+        .getElementById(
+            "scene" + number
+        )
+        .classList.add("active");
+
+
+    currentScene = number;
+
+
+    const percentage =
+        (number / totalScenes) * 100;
+
+
+    document
+        .getElementById("progress")
+        .style.width =
+        percentage + "%";
+
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+
+    if (number === 12) {
+
+        loadQuestion();
+
+    }
+
+}
+
+
+/* =====================================================
+   SIGUIENTE ESCENA
+===================================================== */
+
+function nextScene() {
+
+
+    if (currentScene < totalScenes) {
+
+        showScene(
+            currentScene + 1
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   ESCENA ANTERIOR
+===================================================== */
+
+function previousScene() {
+
+
+    if (currentScene > 1) {
+
+        showScene(
+            currentScene - 1
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   PENSAMIENTO DIVERGENTE
+===================================================== */
+
+function chooseIdea(element, correct) {
+
+
+    const feedback =
+        document.getElementById(
+            "ideaFeedback"
+        );
+
+
+    document
+        .querySelectorAll(".choice")
+        .forEach(choice => {
+
+            choice.classList.remove(
+                "correct",
+                "wrong"
+            );
+
+        });
+
+
+    if (correct) {
+
+
+        element.classList.add(
+            "correct"
+        );
+
+
+        feedback.style.display =
+            "block";
+
+
+        feedback.innerHTML =
+            "✅ ¡Correcto! El pensamiento divergente consiste en generar múltiples posibilidades ante un mismo problema.";
+
+    }
+
+    else {
+
+
+        element.classList.add(
+            "wrong"
+        );
+
+
+        feedback.style.display =
+            "block";
+
+
+        feedback.innerHTML =
+            "❌ No exactamente. Bob necesitaba generar varias posibilidades, no quedarse con una solución conocida.";
+
+    }
+
+}
+
+
+/* =====================================================
+   ACTIVAR MÁQUINA
+===================================================== */
+
+function activateMachine() {
+
+
+    const machine =
+        document.getElementById(
+            "machine"
+        );
+
+
+    machine.classList.add(
+        "active"
+    );
+
+
+    setTimeout(() => {
+
+
+        alert(
+            "🍌 ¡BANANAS RECOLECTADAS SIN APLASTARSE! 🍌"
+        );
+
+
+    }, 500);
+
+}
+
+
+/* =====================================================
+   PREGUNTAS DEL QUIZ
+===================================================== */
+
+const questions = [
+
+
+    {
+
+        question:
+            "¿Qué utilizó Bob para generar diferentes soluciones?",
+
+        answers: [
+
+            "Pensamiento divergente",
+
+            "Memorización",
+
+            "Imitación"
+
+        ],
+
+        correct: 0
+
+    },
+
+
+    {
+
+        question:
+            "¿Qué dos características debe combinar una producción creativa?",
+
+        answers: [
+
+            "Velocidad y memoria",
+
+            "Originalidad y utilidad",
+
+            "Inteligencia y suerte"
+
+        ],
+
+        correct: 1
+
+    },
+
+
+    {
+
+        question:
+            "¿Qué capacidad estuvo involucrada cuando Bob razonó sobre el problema?",
+
+        answers: [
+
+            "Inteligencia fluida",
+
+            "Memoria muscular",
+
+            "Reflejos"
+
+        ],
+
+        correct: 0
+
+    },
+
+
+    {
+
+        question:
+            "¿Qué ocurrió cuando Bob dejó de buscar activamente la solución?",
+
+        answers: [
+
+            "Abandonó el proyecto",
+
+            "Tuvo un momento de insight",
+
+            "Olvidó el problema"
+
+        ],
+
+        correct: 1
+
+    },
+
+
+    {
+
+        question:
+            "¿Cuál fue uno de los problemas metodológicos relacionados con medir la creatividad?",
+
+        answers: [
+
+            "Todos los métodos producen exactamente los mismos resultados",
+
+            "El producto final y el pensamiento divergente pueden evaluarse de manera diferente",
+
+            "La creatividad solamente puede medirse mediante exámenes"
+
+        ],
+
+        correct: 1
+
+    }
+
+
+];
+
+
+let questionIndex = 0;
+
+let score = 0;
+
+let answered = false;
+
+
+/* =====================================================
+   CARGAR PREGUNTA
+===================================================== */
+
+function loadQuestion() {
+
+
+    answered = false;
+
+
+    const question =
+        questions[
+            questionIndex
+        ];
+
+
+    document
+        .getElementById(
+            "questionText"
+        )
+        .textContent =
+        question.question;
+
+
+    const answersContainer =
+        document.getElementById(
+            "answers"
+        );
+
+
+    answersContainer.innerHTML = "";
+
+
+    question.answers.forEach(
+        (answer, index) => {
+
+
+            const button =
+                document.createElement(
+                    "div"
+                );
+
+
+            button.className =
+                "answer";
+
+
+            button.textContent =
+                answer;
+
+
+            button.onclick =
+                () =>
+                    checkAnswer(
+                        button,
+                        index
+                    );
+
+
+            answersContainer.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "nextQuestion"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "quizResult"
+        )
+        .textContent = "";
+
+}
+
+
+/* =====================================================
+   COMPROBAR RESPUESTA
+===================================================== */
+
+function checkAnswer(
+    button,
+    index
+) {
+
+
+    if (answered) return;
+
+
+    answered = true;
+
+
+    const correct =
+        questions[
+            questionIndex
+        ].correct;
+
+
+    const allAnswers =
+        document.querySelectorAll(
+            ".answer"
+        );
+
+
+    allAnswers.forEach(
+        (answer, i) => {
+
+
+            if (i === correct) {
+
+                answer.classList.add(
+                    "correct"
+                );
+
+            }
+
+        }
+    );
+
+
+    if (index === correct) {
+
+
+        button.classList.add(
+            "correct"
+        );
+
+
+        score++;
+
+    }
+
+    else {
+
+
+        button.classList.add(
+            "incorrect"
+        );
+
+    }
+
+
+    if (
+        questionIndex <
+        questions.length - 1
+    ) {
+
+
+        document
+            .getElementById(
+                "nextQuestion"
+            )
+            .style.display =
+            "block";
+
+    }
+
+    else {
+
+
+        document
+            .getElementById(
+                "quizResult"
+            )
+            .textContent =
+            "🎉 Terminaste el quiz. Tu resultado fue " +
+            score +
+            " de " +
+            questions.length +
+            ".";
+
+    }
+
+}
+
+
+/* =====================================================
+   SIGUIENTE PREGUNTA
+===================================================== */
+
+function nextQuestion() {
+
+
+    if (
+        questionIndex <
+        questions.length - 1
+    ) {
+
+
+        questionIndex++;
+
+
+        loadQuestion();
+
+    }
+
+}
+
+
+/* =====================================================
+   REINICIAR
+===================================================== */
+
+function restartStory() {
+
+
+    currentScene = 1;
+
+    questionIndex = 0;
+
+    score = 0;
+
+    showScene(1);
+
+}
+
+
+/* =====================================================
+   INICIAR
+===================================================== */
+
+showScene(1);
+
+</script>
+
+
+</body>
+
+</html>
